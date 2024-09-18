@@ -1,3 +1,6 @@
 King Size
 
-![Description of the GIF](https://i.gifer.com/14n1.gif)
+
+<p align="center">
+  <img src="https://i.gifer.com/14n1.gif" alt="Description of the GIF">
+</p>
