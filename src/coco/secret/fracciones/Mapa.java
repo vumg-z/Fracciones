@@ -44,11 +44,11 @@ public class Mapa {
         // unidades.put("veintinueve", 29);
 
         unidades.put("veintiuno", 21);
-        unidades.put("veintidós", 22);
-        unidades.put("veintitrés", 23);
+        unidades.put("veintidos", 22);
+        unidades.put("veintitres", 23);
         unidades.put("veinticuatro", 24);
         unidades.put("veinticinco", 25);
-        unidades.put("veintiséis", 26);
+        unidades.put("veintiseis", 26);
         unidades.put("veintisiete", 27);
         unidades.put("veintiocho", 28);
         unidades.put("veintinueve", 29);
@@ -66,20 +66,20 @@ public class Mapa {
         denominadorSingular.put(4, "cuarto");
         denominadorSingular.put(5, "quinto");
         denominadorSingular.put(6, "sexto");
-        denominadorSingular.put(7, "séptimo");
+        denominadorSingular.put(7, "septimo");
         denominadorSingular.put(8, "octavo");
         denominadorSingular.put(9, "noveno");
-        denominadorSingular.put(10, "décimo");
+        denominadorSingular.put(10, "decimo");
 
         denominadorPlural.put("medio", "medios");
         denominadorPlural.put("tercio", "tercios");
         denominadorPlural.put("cuarto", "cuartos");
         denominadorPlural.put("quinto", "quintos");
         denominadorPlural.put("sexto", "sextos");
-        denominadorPlural.put("séptimo", "séptimos");
+        denominadorPlural.put("septimo", "septimos");
         denominadorPlural.put("octavo", "octavos");
         denominadorPlural.put("noveno", "novenos");
-        denominadorPlural.put("décimo", "décimos");
+        denominadorPlural.put("decimo", "decimos");
     }
 
     public static NumberParseResult parseNumber(String[] words, int index) {
