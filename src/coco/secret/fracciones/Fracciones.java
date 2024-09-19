@@ -28,8 +28,14 @@ public class Fracciones {
             throw new IllegalArgumentException("Denominador no válido en: " + denominatorText);
         }
 
+        // **Agregamos esta verificación para el denominador cero**
+        if (denominator == 0) {
+            throw new IllegalArgumentException("División por cero no permitida");
+        }
+
         return new int[]{numeratorResult.number, denominator};
     }
+
 
 
 
@@ -65,35 +71,60 @@ public class Fracciones {
     }
 
     static String fractionToText(int[] fraction) {
-        String numeratorText = Mapa.numeroATexto(Math.abs(fraction[0]));
-        String denominatorText;
+    int numerator = fraction[0];
+    int denominator = fraction[1];
 
-        if (fraction[1] <= 10) {
-            String denominatorSingular = Mapa.getDenominadorSingular(fraction[1]);
-            if (Math.abs(fraction[0]) > 1) {
-                denominatorText = Mapa.getDenominadorPlural(denominatorSingular);
-            } else {
-                denominatorText = denominatorSingular;
-            }
-        } else {
-            String numberText = Mapa.numeroATexto(fraction[1]);
-            if (Math.abs(fraction[0]) > 1) {
-                denominatorText = numberText + "avos";
-            } else {
-                denominatorText = numberText + "avo";
-            }
-        }
-
-        if (fraction[0] == 1) {
-            numeratorText = "un";
-        } else if (fraction[0] == -1) {
-            numeratorText = "menos un";
-        } else if (fraction[0] < 0) {
+    if (denominator == 1) {
+        // Es un número entero
+        String numeratorText = Mapa.numeroATexto(Math.abs(numerator));
+        if (numerator < 0) {
             numeratorText = "menos " + numeratorText;
         }
-
-        return numeratorText + " " + denominatorText;
+        return numeratorText;
     }
+
+    String numeratorText = Mapa.numeroATexto(Math.abs(numerator));
+    String denominatorText;
+
+    if (denominator <= 10) {
+        String denominatorSingular = Mapa.getDenominadorSingular(denominator);
+        if (Math.abs(numerator) > 1) {
+            denominatorText = Mapa.getDenominadorPlural(denominatorSingular);
+        } else {
+            denominatorText = denominatorSingular;
+        }
+    } else {
+        String numberText = Mapa.numeroATexto(denominator);
+        if (Math.abs(numerator) > 1) {
+            denominatorText = numberText + "avos";
+        } else {
+            denominatorText = numberText + "avo";
+        }
+    }
+
+    if (numerator == 1) {
+        numeratorText = "un";
+    } else if (numerator == -1) {
+        numeratorText = "menos un";
+    } else if (numerator < 0) {
+        numeratorText = "menos " + numeratorText;
+    }
+
+    return numeratorText + " " + denominatorText;
+}
+
+
+
+    private static int gcd(int a, int b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+    }
+
+    private static int[] simplifyFraction(int numerator, int denominator) {
+        int gcdValue = gcd(Math.abs(numerator), Math.abs(denominator));
+        return new int[]{numerator / gcdValue, denominator / gcdValue};
+    }
+
 
     public static String handleInput(String input) {
         try {
@@ -140,6 +171,8 @@ public class Fracciones {
                 default:
                     return "Operación no soportada";
             }
+
+            result = simplifyFraction(result[0], result[1]);
 
             return fractionToText(result);
         } catch (IllegalArgumentException e) {

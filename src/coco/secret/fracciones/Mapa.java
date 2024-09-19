@@ -33,12 +33,22 @@ public class Mapa {
         unidades.put("dieciocho", 18);
         unidades.put("diecinueve", 19);
         unidades.put("veinte", 20);
+        // unidades.put("veintiuno", 21);
+        // unidades.put("veintidos", 22);
+        // unidades.put("veintitres", 23);
+        // unidades.put("veinticuatro", 24);
+        // unidades.put("veinticinco", 25);
+        // unidades.put("veintiseis", 26);
+        // unidades.put("veintisiete", 27);
+        // unidades.put("veintiocho", 28);
+        // unidades.put("veintinueve", 29);
+
         unidades.put("veintiuno", 21);
-        unidades.put("veintidos", 22);
-        unidades.put("veintitres", 23);
+        unidades.put("veintidós", 22);
+        unidades.put("veintitrés", 23);
         unidades.put("veinticuatro", 24);
         unidades.put("veinticinco", 25);
-        unidades.put("veintiseis", 26);
+        unidades.put("veintiséis", 26);
         unidades.put("veintisiete", 27);
         unidades.put("veintiocho", 28);
         unidades.put("veintinueve", 29);
@@ -73,96 +83,103 @@ public class Mapa {
     }
 
     public static NumberParseResult parseNumber(String[] words, int index) {
-        int number = -1;
-        int wordsConsumed = 0;
+    int number = -1;
+    int wordsConsumed = 0;
 
-        // Try to parse "tens y units"
-        if (index + 2 < words.length && words[index + 1].equals("y")) {
-            String tensWord = words[index];
-            String unitsWord = words[index + 2];
-
-            Integer tens = decenas.get(tensWord);
-            Integer units = unidades.get(unitsWord);
-
-            if (tens != null && units != null) {
-                number = tens + units;
-                wordsConsumed = 3;
-                return new NumberParseResult(number, wordsConsumed);
-            }
+    // Build a text from the words starting at index
+    StringBuilder numberTextBuilder = new StringBuilder();
+    for (int i = index; i < words.length; i++) {
+        numberTextBuilder.append(words[i]);
+        if (i < words.length - 1) {
+            numberTextBuilder.append(" ");
         }
-
-        // Try to parse one word number
-        String word1 = words[index];
-        if (unidades.containsKey(word1)) {
-            number = unidades.get(word1);
-            wordsConsumed = 1;
-        } else if (decenas.containsKey(word1)) {
-            number = decenas.get(word1);
-            wordsConsumed = 1;
-        }
-
-        if (number != -1) {
-            return new NumberParseResult(number, wordsConsumed);
-        } else {
-            return null;
+        String numberText = numberTextBuilder.toString().trim();
+        int num = getNumero(numberText);
+        if (num != -1) {
+            number = num;
+            wordsConsumed = i - index + 1;
         }
     }
 
-    public static int getNumero(String text) {
-        text = text.trim().toLowerCase();
+    if (number != -1) {
+        return new NumberParseResult(number, wordsConsumed);
+    } else {
+        return null;
+    }
+}
 
-        if (unidades.containsKey(text)) {
-            return unidades.get(text);
-        } else if (decenas.containsKey(text)) {
-            return decenas.get(text);
-        } else if (text.contains(" y ")) {
-            String[] parts = text.split(" y ");
-            if (parts.length != 2) {
-                return -1;
-            }
-            String tensText = parts[0];
-            String unitsText = parts[1];
-            Integer tens = decenas.get(tensText);
-            Integer units = unidades.get(unitsText);
-            if (tens == null || units == null) {
-                return -1;
-            }
+
+    public static int getNumero(String text) {
+    text = text.trim().toLowerCase();
+
+    // Handle numbers from 0 to 29 directly
+    if (unidades.containsKey(text)) {
+        return unidades.get(text);
+    } else if (decenas.containsKey(text)) {
+        return decenas.get(text);
+    } else if (text.contains(" y ")) {
+        String[] parts = text.split(" y ");
+        if (parts.length != 2) {
+            return -1;
+        }
+        String tensText = parts[0];
+        String unitsText = parts[1];
+        Integer tens = decenas.get(tensText);
+        Integer units = unidades.get(unitsText);
+        if (tens != null && units != null) {
             return tens + units;
         } else {
             return -1;
         }
-    }
-
-    public static int getDenominador(String text) {
-        text = text.trim().toLowerCase();
-
-        // Remove plural 's' if present
-        if (text.endsWith("s")) {
-            text = text.substring(0, text.length() - 1);
+    } else {
+        // For numbers from 31 to 99 without 'y' (e.g., "treinta")
+        Integer tens = decenas.get(text);
+        if (tens != null) {
+            return tens;
         }
-
-        // Check if text matches denominador singular or plural
-        for (Map.Entry<Integer, String> entry : denominadorSingular.entrySet()) {
-            String singular = entry.getValue();
-            String plural = denominadorPlural.get(singular);
-
-            if (singular.equals(text) || (plural != null && plural.equals(text))) {
-                return entry.getKey();
-            }
-        }
-
-        // Check for numbers ending with 'avo' or 'avo'
-        if (text.endsWith("avo")) {
-            int index = text.lastIndexOf("avo");
-            String numberText = text.substring(0, index).trim();
-            int denominator = getNumero(numberText);
-            if (denominator != -1) {
-                return denominator;
-            }
-        }
-
         return -1;
     }
+}
+
+
+    public static int getDenominador(String text) {
+    text = text.trim().toLowerCase();
+
+    // Remove plural 's' if present
+    if (text.endsWith("s")) {
+        text = text.substring(0, text.length() - 1);
+    }
+
+    // Check if text matches denominador singular or plural
+    for (Map.Entry<Integer, String> entry : denominadorSingular.entrySet()) {
+        String singular = entry.getValue();
+        String plural = denominadorPlural.get(singular);
+
+        if (singular.equals(text) || (plural != null && plural.equals(text))) {
+            return entry.getKey();
+        }
+    }
+
+    // Check for numbers ending with 'avo' or 'avos'
+    if (text.endsWith("avo")) {
+        int index = text.lastIndexOf("avo");
+        String numberText = text.substring(0, index).trim();
+        int denominator = getNumero(numberText);
+        if (denominator != -1) {
+            return denominator;
+        }
+    } else if (text.endsWith("avos")) {
+        int index = text.lastIndexOf("avos");
+        String numberText = text.substring(0, index).trim();
+        int denominator = getNumero(numberText);
+        if (denominator != -1) {
+            return denominator;
+        }
+    }
+
+    return -1;
+}
+
 
     public static String numeroATexto(int number) {
         if (number == 0) {
